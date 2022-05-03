@@ -3,16 +3,9 @@
   get_header();
 
   while(have_posts()) {
-    the_post(); ?>
-    <div class="page-banner">
-      <div class="page-banner__bg-image" style="background-image: url(<?php echo get_theme_file_uri('/images/ocean.jpg'); ?>)"></div>
-      <div class="page-banner__content container container--narrow">
-        <h1 class="page-banner__title"><?php the_title(); ?></h1>
-        <div class="page-banner__intro">
-          <p>Don't forget to replace me later.</p>
-        </div>
-      </div>
-    </div>
+    the_post();
+    pageBanner();
+    ?>
 
   <div class="container container--narrow page-section">
       <div class="metabox metabox--position-up metabox--with-home-link">
@@ -24,6 +17,46 @@
       <?php the_content(); ?>
     </div>
     <?php
+
+      $relatedProfessors = new WP_Query(array(
+        'posts_per_page' => -1,
+        'post_type'      => 'professor',
+        // We want the events with earlier event dates to show first, these are numbers hence _num.
+        'orderby' => 'title',
+        'order' => 'ASC',
+        //Do not show events that are in the past wrt to the present date.
+        'meta_query' => array(
+          array (
+            'key' => 'related_programs',
+            'compare' => 'LIKE',
+            // We search for "id" here because in the DB the array of related programs is serialized into a single string
+            // For ex array(12, 13, 1200) is serialized to "{"i" : "12", "i" : "1200"}" hence we need to compare with a double quoted value. 
+            'value' => '"' . get_the_ID() . '"',
+          )
+        )
+      ));
+      if ($relatedProfessors->have_posts()) {
+      echo '<hr class="section-break" />';
+      echo '<h2 class="headline headline--medium">' . get_the_title() . ' Professors</h2>';
+      echo '<ul class="professor-cards">';
+
+      while($relatedProfessors->have_posts()) {
+      $relatedProfessors->the_post(); ?>
+      <li class="professor-card__list-item">
+        <a class="professor-card" href="<?php the_permalink(); ?>">
+          <img class="professor-card__image" src="<?php the_post_thumbnail_url('professorLandscape'); ?>" alt="">
+          <span class="professor-card__name"><?php the_title(); ?></span>
+        </a>
+    </li>
+      <?php }
+      echo '</ul>';
+      }
+      // We always need to reset data before running another custom query that depends on global functions. the_post we call on the custom query
+      // object hijacks the global functions like the_ID and the_title(). Notice that our next custom query
+      // depends on get_the_ID() which gets overridden by the professors object id instead of the page id.
+      wp_reset_postdata();
+
+
           // Same format as our custom field.
           $today = date('Ymd');
           $homepageEvents = new WP_Query(array(
@@ -56,30 +89,11 @@
           echo '<h2 class="headline headline--medium">Upcoming ' . get_the_title() . ' Events</h2>';
 
         while($homepageEvents->have_posts()) {
-          $homepageEvents->the_post(); ?>
-          <div class="event-summary">
-          <a class="event-summary__date t-center" href="#">
-            <!-- get_field is given by the advanced cutom fields plugin to retrieve the custom fields -->
-            <span class="event-summary__month"><?php
-              $eventDate = new DateTime(get_field('event_date'));
-              echo $eventDate->format('M');
-            ?></span>
-            <span class="event-summary__day"><?php echo $eventDate->format('d'); ?></span>
-          </a>
-          <div class="event-summary__content">
-            <h5 class="event-summary__title headline headline--tiny"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h5>
-            <p><?php if (has_excerpt()) {
-              // Prevent line breaks created by the_excerpt() by using a manual echo.
-              echo get_the_excerpt();
-            } else {
-              echo wp_trim_words(get_the_content(), 18);
-            } ?> <a href="<?php the_permalink(); ?>" class="nu gray">Learn more</a></p>
-          </div>
-        </div>
-        <?php } 
-          }
-        
-        ?>
+          $homepageEvents->the_post();
+          get_template_part('template-parts/content', 'event');
+        } 
+      }
+      ?>
   </div>
     
   <?php }
