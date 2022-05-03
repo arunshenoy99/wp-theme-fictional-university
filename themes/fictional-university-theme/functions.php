@@ -20,6 +20,15 @@ function university_features() {
 add_action('after_setup_theme', 'university_features');
 
 function university_adjust_queries($query) {
+
+  if (!is_admin() and is_post_type_archive('program') and $query->is_main_query()) {
+    $query->set('posts_per_page', -1);
+    $query->set('orderby', 'title');
+    $query->set('order', 'ASC');
+  }
+
+  // If we are almost satisfied with the default query being used whenever an archive loads then we can
+  // make subtle changes to the default query instead of writing a default query by making use of the hook below.
   if (!is_admin() and is_post_type_archive('event') and $query->is_main_query()) {
     $today = date('Ymd');
     $query->set('meta_key', 'event_date');
