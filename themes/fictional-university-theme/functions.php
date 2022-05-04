@@ -36,6 +36,14 @@ function university_files() {
   wp_enqueue_style('font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
   wp_enqueue_style('university_main_styles', get_theme_file_uri('/build/style-index.css'));
   wp_enqueue_style('university_extra_styles', get_theme_file_uri('/build/index.css'));
+
+  // This function takes the associative array given as the 3rd argument and adds this to a javascript variable
+  // Given as the second argument and enclose this assignment in a script tag.
+  // This variable can then be used by our javascript code.
+  wp_localize_script('main-university-js', 'universityData', array(
+    'root_url'=> get_site_url(),
+
+  ));
 }
 
 add_action('wp_enqueue_scripts', 'university_files');
@@ -54,6 +62,7 @@ function university_features() {
   add_image_size('professorLandscape', 400, 260, true);
   add_image_size('professorPortrait', 480, 650, true);
   add_image_size('pageBanner', 1500, 350, true);
+
 }
 
 add_action('after_setup_theme', 'university_features');
