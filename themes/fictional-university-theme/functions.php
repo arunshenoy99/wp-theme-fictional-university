@@ -1,5 +1,20 @@
 <?php
 
+// Has the search REST endpoint register and the logic
+require get_theme_file_path('/inc/search-route.php');
+
+function university_custom_rest() {
+  // Adds a custom fields to the wordpress rest route for retrieving posts.
+  register_rest_field('post', 'authorName', array(
+    'get_callback' => function () {
+      return get_the_author();
+    }
+  ));
+}
+
+// Customize the wordpress rest api to include custom fields.
+add_action('rest_api_init', 'university_custom_rest');
+
 // make args optional by making it equal to NULL
 function pageBanner($args = NULL) {
   if (!$args['title']) {

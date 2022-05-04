@@ -15,6 +15,7 @@ function university_post_types() {
       ),
       'has_archive' => true,
       'public' => true,
+       // This enables rest api access to this custom post via the wordpress rest api and prevents showing no route found.
       'show_in_rest' => true,
       'labels' => array(
         'name' => 'Events',
