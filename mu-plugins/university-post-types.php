@@ -31,7 +31,8 @@ function university_post_types() {
       // If you use the supports key then make sure to pass the editor keyword else it will fallback to the classic editor
       'supports' => array(
         'title',
-        'editor'
+        // Remove Editor here so that we can use our custom field for the body content so that our search does not search the content for programs.
+        // 'editor'
         // We need custom fields if we give our users the control to add custom fields, not needed here.
         // 'custom-fields'
       ),
