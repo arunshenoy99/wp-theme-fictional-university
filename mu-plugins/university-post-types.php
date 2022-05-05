@@ -2,6 +2,10 @@
 
 function university_post_types() {
     register_post_type('event', array(
+      // Creates a custom capability type for event so that we can add custom permissions for this post type. By default for all posts we have the capability type to be post.
+      'capability_type' => 'event',
+      // map the custom capabilities to our own roles
+      'map_meta_cap' => true,
       // If you use the supports key then make sure to pass the editor keyword else it will fallback to the classic editor
       'supports' => array(
         'title',
@@ -74,6 +78,8 @@ function university_post_types() {
     ));
 
     register_post_type('campus', array(
+      'capability_type' => 'campus',
+      'map_meta_cap' => true,
       // If you use the supports key then make sure to pass the editor keyword else it will fallback to the classic editor
       'supports' => array(
         'title',
