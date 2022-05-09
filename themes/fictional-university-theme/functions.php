@@ -4,10 +4,16 @@
 require get_theme_file_path('/inc/search-route.php');
 
 function university_custom_rest() {
-  // Adds a custom fields to the wordpress rest route for retrieving posts.
+  // Adds custom fields to the wordpress rest route for retrieving posts.
   register_rest_field('post', 'authorName', array(
     'get_callback' => function () {
       return get_the_author();
+    }
+  ));
+
+  register_rest_field('note', 'userNoteCount', array(
+    'get_callback' => function () {
+      return count_user_posts(get_current_user_id(), 'note');
     }
   ));
 }
@@ -57,7 +63,8 @@ function university_files() {
   // This variable can then be used by our javascript code.
   wp_localize_script('main-university-js', 'universityData', array(
     'root_url'=> get_site_url(),
-
+    // This nonce is sent with destructive requests from the front end
+    'nonce' => wp_create_nonce('wp_rest'),
   ));
 }
 
@@ -161,4 +168,29 @@ add_filter('login_headertitle', 'ourLoginTitle');
 
 function ourLoginTitle() {
   return get_bloginfo('name');
+}
+
+// Force note posts to be private by modifying the note data to have the status as private before saving to the db.
+// Filters help us filter content by using their hooks.
+// Here 10 gives the priority of the function callback, useful when there are multiple functions for the same hook
+//  and 2 says that we will get 2 arguments to the callback function, 
+// the second one being the post array having extra info like ID about the post.
+add_filter('wp_insert_post_data', 'makeNotePrivate', 10, 2);
+
+function makeNotePrivate($data, $postarr) {
+  if ($data['post_type'] == 'note' ) {
+    // We want to ensure we add this check only when we are creating a new note
+    // We do not want to die if the post is being updated or edited.
+    // Posts that are being created do not have the ID for the first time.
+    if (count_user_posts(get_current_user_id(), 'note') > 4 and ! $postarr['ID']) {
+      die('You have reached your note limit.');
+    }
+    // Ensure we do not store unecessary html in our database 
+    $data['post_content'] = sanitize_textarea_field($data['post_content']);
+    $data['post_title'] = sanitize_text_field($data['post_title']);
+  }
+  if ($data['post_type'] == 'note' and $data['post_status'] != 'trash') {
+    $data['post_status'] = 'private';
+  }
+  return $data;
 }

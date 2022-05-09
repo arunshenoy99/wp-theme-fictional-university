@@ -103,6 +103,32 @@ function university_post_types() {
       ),
       'menu_icon' => 'dashicons-location-alt'
     ));
+
+    //Note post type
+    register_post_type('note', array(
+      'capability_type' => 'note',
+      'map_meta_cap' => true,
+      // If you use the supports key then make sure to pass the editor keyword else it will fallback to the classic editor
+      'supports' => array(
+        'title',
+        'editor'
+        // We need custom fields if we give our users the control to add custom fields, not needed here.
+        // 'custom-fields'
+      ),
+      // Setting public to false will ensure that nobody can view the post type but this also hides it from the admin dashboard
+      'public' => false,
+      // Since we set public to false this hides the post from the admin dashboard, hence we need to use this to ensure that it is visible on the admin dashboard.
+      'show_ui' => true,
+      'show_in_rest' => true,
+      'labels' => array(
+        'name' => 'Notes',
+        'add_new_item' => 'Add New Note',
+        'edit_item' => 'Edit Note',
+        'all_items' => 'All Notes',
+        'singular_name' => 'Note'
+      ),
+      'menu_icon' => 'dashicons-welcome-write-blog'
+    ));
 }
   
 add_action('init', 'university_post_types');
