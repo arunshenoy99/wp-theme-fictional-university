@@ -148,6 +148,24 @@ function university_post_types() {
       ),
       'menu_icon' => 'dashicons-heart'
     ));
+
+    register_post_type('homepage_slideshow', array(
+      'supports' => array(
+        'title'
+      ),
+      'public' => false,
+      'show_ui' => true,
+      // We don't want to show in the default REST api endpoints since we will have our own custom endpoints.
+      // 'show_in_rest' => true,
+      'labels' => array(
+        'name' => 'Homepage Slideshows',
+        'add_new_item' => 'Add',
+        'edit_item' => 'Edit',
+        'all_items' => 'All Slideshows',
+        'singular_name' => 'Homepage Slideshow'
+      ),
+      'menu_icon' => 'dashicons-format-video'
+    ));
 }
   
 add_action('init', 'university_post_types');
