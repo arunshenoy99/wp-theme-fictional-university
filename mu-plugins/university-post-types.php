@@ -129,6 +129,25 @@ function university_post_types() {
       ),
       'menu_icon' => 'dashicons-welcome-write-blog'
     ));
+
+    //Like post type
+    register_post_type('like', array(
+      'supports' => array(
+        'title'
+      ),
+      'public' => false,
+      'show_ui' => true,
+      // We don't want to show in the default REST api endpoints since we will have our own custom endpoints.
+      // 'show_in_rest' => true,
+      'labels' => array(
+        'name' => 'Likes',
+        'add_new_item' => 'Add New Like',
+        'edit_item' => 'Edit Like',
+        'all_items' => 'All Likes',
+        'singular_name' => 'Like'
+      ),
+      'menu_icon' => 'dashicons-heart'
+    ));
 }
   
 add_action('init', 'university_post_types');

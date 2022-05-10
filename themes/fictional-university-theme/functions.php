@@ -2,6 +2,7 @@
 
 // Has the search REST endpoint register and the logic
 require get_theme_file_path('/inc/search-route.php');
+require get_theme_file_path('/inc/like-route.php');
 
 function university_custom_rest() {
   // Adds custom fields to the wordpress rest route for retrieving posts.
