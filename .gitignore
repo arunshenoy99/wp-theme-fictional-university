@@ -1,4 +1,5 @@
-plugins
+plugins/*
+!plugins/featured-professor
 themes/twenty*
 themes/index.php
 node_modules/
