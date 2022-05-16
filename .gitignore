@@ -1,5 +1,6 @@
 plugins/*
 !plugins/featured-professor
+!plugins/new-database-table
 themes/twenty*
 themes/index.php
 node_modules/
