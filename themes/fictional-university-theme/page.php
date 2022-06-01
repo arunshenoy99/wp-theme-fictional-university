@@ -44,7 +44,13 @@
     <?php } ?>
 
       <div class="generic-content">
-        <?php the_content(); ?>
+        <?php the_content();
+        $skyColorValue = sanitize_text_field(get_query_var('skyColor'));
+        $grassColorValue = sanitize_text_field(get_query_var('grassColor'));
+        if ($skyColorValue == 'blue' && $grassColorValue == 'green') {
+          echo '<p>Sky is blue today and the grass is green.</p>';
+        }
+        ?>
       </div>
     </div>
 
